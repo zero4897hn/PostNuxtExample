@@ -1,8 +1,6 @@
 <template>
     <section class="featured-posts">
-        <PostPreview id="1" :is-admin="isAdmin" thumbnail="https://cdn.cjr.org/wp-content/uploads/2019/07/AdobeStock_165953143-1300x500.jpeg" title="Hello there!" previewText="This is my first post!" />
-        <PostPreview id="2" :is-admin="isAdmin" thumbnail="https://cdn.cjr.org/wp-content/uploads/2019/07/AdobeStock_165953143-1300x500.jpeg" title="Hello there!" previewText="This is my first post!" />
-        <PostPreview id="3" :is-admin="isAdmin" thumbnail="https://cdn.cjr.org/wp-content/uploads/2019/07/AdobeStock_165953143-1300x500.jpeg" title="Hello there!" previewText="This is my first post!" />
+        <PostPreview v-for="post in posts" :key="post.id" :id="post.id" :is-admin="isAdmin" :thumbnail="post.thumbnail" :title="post.title" :previewText="post.previewText" />
     </section>
 </template>
 
@@ -14,6 +12,10 @@ export default {
 		isAdmin: {
 			type: Boolean,
 			default: false
+		},
+		posts: {
+			type: Array,
+			required: true
 		}
 	},
 	components: {
