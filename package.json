@@ -11,7 +11,9 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "nuxt": "^2.0.0"
+    "nuxt": "^2.9.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "cross-env": "^5.0.1"
+  }
 }
