@@ -1,4 +1,5 @@
 import Vuex from 'vuex';
+import axios from 'axios';
 
 const createStore = () => {
     return new Vuex.Store({
@@ -8,21 +9,42 @@ const createStore = () => {
         mutations: {
             setPosts(state, posts) {
                 state.loadedPosts = posts;
+            },
+            addPost(state, post) {
+                state.loadedPosts.push(post);
+            },
+            editPost(state, editedPost) {
+                const postIndex = state.loadedPosts.findIndex(post => post.id === editedPost.id);
+                state.loadedPosts[postIndex] = editedPost;
             }
         },
         actions: {
             nuxtServerInit(vuexContext, context) {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        vuexContext.commit('setPosts', [
-                            { id: '1', title: 'First Post', previewText: 'This is our first post!', thumbnail: 'https://cdn.cjr.org/wp-content/uploads/2019/07/AdobeStock_165953143-1300x500.jpeg' },
-                            { id: '2', title: 'Second Post', previewText: 'This is our second post!', thumbnail: 'https://cdn.cjr.org/wp-content/uploads/2019/07/AdobeStock_165953143-1300x500.jpeg' },
-                            { id: '3', title: 'Third Post', previewText: 'This is our third post!', thumbnail: 'https://cdn.cjr.org/wp-content/uploads/2019/07/AdobeStock_165953143-1300x500.jpeg' }
-                        ]);
-                        resolve ();
-                    }, 1500);
-                    //reject(new Error);
-                });
+                return axios.get('https://nuxt-blog-demo-e5c7b.firebaseio.com/posts.json')
+                .then(response => {
+                    const postsArray = [];
+                    for (const key in response.data) {
+                        postsArray.push({ ...response.data[key], id: key });
+                    }
+                    vuexContext.commit('setPosts', postsArray);
+                })
+                .catch(e => context.error(e));
+            },
+            addPost(vuexContext, post) {
+                const createdPost = {
+                    ...post, 
+                    pdatedDate: new Date()
+                };
+                return axios.post('https://nuxt-blog-demo-e5c7b.firebaseio.com/posts.json', createdPost)
+                .then(result => {
+                    vuexContext.commit('addPost', { ...createdPost, id: result.data.name });
+                })
+                .catch(e => console.log(e));
+            },
+            editPost(vuexContext, editedPost) {
+                return axios.put('https://nuxt-blog-demo-e5c7b.firebaseio.com/posts/' + editedPost.id + '.json', editedPost)
+                .then(() => vuexContext.commit('editPost', editedPost))
+                .catch(e => console.log(e));
             },
             setPosts(vuexContext, posts) {
                 vuexContext.commit('setPosts', posts);
