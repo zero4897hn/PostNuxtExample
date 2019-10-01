@@ -24,11 +24,13 @@ export default {
   ** Global CSS
   */
   css: [
+    '~assets/styles/main.css'
   ],
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '~plugins/core-components.js'
   ],
   /*
   ** Nuxt.js dev-modules
@@ -49,5 +51,20 @@ export default {
     */
     extend (config, ctx) {
     }
+  },
+  env: {
+    baseUrl: process.env.BASE_URL || 'https://nuxt-blog-demo-e5c7b.firebaseio.com'
+  },
+  transition: {
+    name: 'fade',
+    mode: 'out-in'
   }
+  // router: {
+  //   extendRoutes(routes, resolve) {
+  //     routes.push({
+  //       path: '*',
+  //       component: resolve(__dirname, 'pages/index.vue')
+  //     });
+  //   }
+  // }
 }
